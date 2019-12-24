@@ -3,7 +3,6 @@ package com.luxoft.training.eas017.day1;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.sql.SparkSession;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class WordCountJava {
@@ -19,28 +18,19 @@ public class WordCountJava {
 
         //TODO
         //Lets count number of non empty lines
-        long numberOfNonEmptyLines = text.filter(line -> !line.isEmpty()).count();
+        long numberOfNonEmptyLines = 0;
         System.out.println("There are " + numberOfNonEmptyLines + " non empty lines");
 
         //TODO
         //Find what is the most frequent word length in text
-        Integer mostFrequentWordLength = text.flatMap(line -> Arrays.asList(line.split(" ")).iterator())
-                .map(word -> word.toLowerCase().replaceAll("[^a-z]", ""))
-                .keyBy(word -> word.length())
-                .aggregateByKey(0, (count, word) -> count + 1, (count1, count2) -> count1 + count2)
-                .mapToPair(tuple -> tuple.swap())
-                .sortByKey(false)
-                .values()
-                .first();
+        Integer mostFrequentWordLength = null;
 
         System.out.println("Most frequent word length in text is " + mostFrequentWordLength);
 
         //TODO
         //Print all distinct words for the most frequent word length
-        List<String> words = text.flatMap(line -> Arrays.asList(line.split(" ")).iterator())
-                .map(word -> word.toLowerCase().replaceAll("[^a-z]", ""))
-                .filter(word -> word.length() == mostFrequentWordLength)
-                .collect();
+        List<String> words = null;
+
         System.out.println("Print all distinct words for the most frequent word length: " + words);
     }
 
