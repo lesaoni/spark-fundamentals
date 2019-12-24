@@ -11,17 +11,8 @@ object SparkPiComputationScala extends App {
   val sc = new SparkContext("local[*]", "Pi computation")
 
   // TODO: Calculate Pi using Spark
-  val iterationsRdd = sc.parallelize(1 to numberOfIterations)
 
-  val iterationsOutcomes = iterationsRdd.filter(_ => {
-    val x = random * 2 - 1
-    val y = random * 2 - 1
-    x * x + y * y < 1
-  })
-
-  val pointsInsideCircle = iterationsOutcomes.count
-
-  val piApproximation = 4.0 * pointsInsideCircle / numberOfIterations
+  val piApproximation = ???
 
   println("Pi is roughly " + piApproximation)
 
