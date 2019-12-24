@@ -20,24 +20,16 @@ object NGramModelScala extends App {
     Step 2: Keep only alpha-numeric characters and whitespaces (Hint: you might want to use regex [^a-zA-Z0-9\\s])
     Step 3: Convert to lower case
    */
-  val emoticonBc = sc.broadcast(emoticons.collect())
+  def cleanText(text : String) : String = ???
 
-  def cleanText(text : String) : String =
-    emoticonBc.value.foldLeft(text){
-      (clearedSentence, emoticon) => clearedSentence
-        .replace(emoticon, "")
-        .replaceAll("[^a-zA-Z0-9\\s]","")
-        .toLowerCase
-    }
-
-  val cleanedSentences : RDD[String] = sentences.map(cleanText).filter(_.nonEmpty).cache()
+  val cleanedSentences : RDD[String] = ???
 
   // TODO: calculate how many words there are in the dataset
-  val words = cleanedSentences.flatMap(_.split(" ").map(_.trim).filter(_.nonEmpty)) 
-  val totalWordCount : Long = words.count()
+
+  val totalWordCount : Long = ???
 
   // TODO: Calculate unigrams (single word counts), print 10 most popular words
-  val unigrams = words.map(s => (s, 1)).reduceByKey(_ + _).sortBy(_._2, ascending = false)
+  val unigrams : RDD[( String, Int)] = ???
 
   /* TODO: Claculate bigrams, print 10 most popular bigrams
     Implement function splitIntoBigrams, which returns the sequence of all bigrams in the sentence with their counts
@@ -45,33 +37,15 @@ object NGramModelScala extends App {
     Hint: you might want to use "sliding" method of Scala collections
     Before applying the method ensure, that the input contains at least 2 words
   */
-  def splitIntoBigrams(sentence : String) : Seq[(String, String)] =
-    sentence.split(" ")
-      .sliding(2)
-      .map(splitted => (splitted.head, splitted.tail.head))
-      .toSeq
+  def splitIntoBigrams(sentence : String) : Seq[(String, String)] =  ???
 
-  val bigrams = cleanedSentences
-    .filter(_.split(" ").length >= 2)
-    .flatMap(splitIntoBigrams)
-    .map(bigram => (bigram, 1))
-    .reduceByKey(_ + _)
-    .sortBy(_._2, ascending = false)
+  val bigrams : RDD[((String, String), Int)] = ???
 
 
   // TODO: Claculate trigrams just like bigrams, print 10 most popular trigrams
-  def splitIntoTrigrams(sentence : String) : Seq[(String, String, String)] =
-    sentence.split(" ")
-      .sliding(3)
-      .map(splitted => (splitted.head, splitted.tail.head, splitted.tail.tail.head))
-      .toSeq
+  def splitIntoTrigrams(sentence : String) : Seq[(String, String, String)] =  ???
 
-  val trigrams = cleanedSentences
-    .filter(_.split(" ").length >= 3)
-    .flatMap(splitIntoTrigrams)
-    .map(trigram => (trigram, 1))
-    .reduceByKey(_ + _)
-    .sortBy(_._2, ascending = false)
+  val trigrams : RDD[((String, String, String), Int)] = ???
 
   // TODO: Demo - copy paste class code in the shell
   class SparkTrigramModel(val unigrams : RDD[( String, Int)],
@@ -158,7 +132,3 @@ object NGramModelScala extends App {
   println(nGramModel.predictNextMostProbableWord("How", "are"))
 
 }
-
-
-
-
