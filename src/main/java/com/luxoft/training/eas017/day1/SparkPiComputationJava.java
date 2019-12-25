@@ -18,7 +18,7 @@ public class SparkPiComputationJava {
 
        int numberOfIterations = 1000000;
 
-       List<Integer> range = IntStream.range(1, 100000).boxed().collect(toList());
+       List<Integer> range = IntStream.range(1, numberOfIterations).boxed().collect(toList());
 
        // TODO: Calculate Pi using Spark
        int pointsInsideCircle = javaSparkContext
