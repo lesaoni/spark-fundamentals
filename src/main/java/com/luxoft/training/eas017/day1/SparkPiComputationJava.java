@@ -3,11 +3,6 @@ package com.luxoft.training.eas017.day1;
 import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaSparkContext;
 
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.toList;
-
 public class SparkPiComputationJava {
 
     public static void main(String[] args) {
@@ -16,9 +11,7 @@ public class SparkPiComputationJava {
        JavaSparkContext javaSparkContext = new JavaSparkContext(sc);
 
        int numberOfIterations = 1000000;
-
-       List<Integer> range = IntStream.range(1, numberOfIterations).boxed().collect(toList());
-
+       
        // TODO: Calculate Pi using Spark
 
        double piApproximation = 3.14;
