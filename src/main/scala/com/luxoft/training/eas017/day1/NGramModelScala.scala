@@ -4,6 +4,11 @@ import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 
 /*
+Original dataset - a subset of Helsinki Corpora (HC) English
+https://www.kaggle.com/d2i2k2w/coursera-data-science-capstone-datasets
+Tweets from Eng_US_Twitter.csv file have been splitted by sentences using nltk sentence tokenizer
+
+Starting an interactive Spark Shell
  $ spark-shell --conf spark.dynamicAllocation.maxExecutors=4  --conf spark.executor.memory=1g
 */
 
