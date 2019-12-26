@@ -113,7 +113,7 @@ object ManualDataFrameCreationExample extends App {
 
   bigDf.groupBy($"id").avg("value")
 
-  bigDf.groupBy($"id").avg("value")
+  bigDf.groupBy($"id").agg(avg("value"), max("value"))
 
 
   //UDF example
