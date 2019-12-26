@@ -40,21 +40,7 @@ object GraphFramesDegreeAndShortestPath extends App {
   // TODO: calculate vertices degrees from edgeDF using DataFrame API
   //  Let's assume that our graph is undirected, so you would need to sum in and out degrees
 
-  val srcCount = edgeDF.groupBy("src")
-    .agg(count("*").alias("cnt"))
-    .withColumnRenamed("src", "id")
 
-  val dstCount = edgeDF.groupBy("dst")
-    .agg(count("*").alias("cnt"))
-    .withColumnRenamed("dst", "id")
-
-  // Union them together and sum the connecting count from both src and dst.
-  val degrees = srcCount.union(dstCount)
-    .groupBy("id")
-    .agg(sum("cnt").alias("degree"))
-    .sort("id")
-  
-  degrees.show()
 
   // TODO Compare your output with GraphFrames implementation
   g.degrees.sort("id").show()
@@ -73,18 +59,12 @@ object GraphFramesDegreeAndShortestPath extends App {
     // TODO extend an existing path with next possible destination using 'appendToSeq' udf and returning it as a new 'dst'
     //  you would need to assign aliases to DataFrames to avoid column mismatch
     //  Eg: df.alias("a"), this alias can be used in 'col' function: col("a.colName")
-    val sp : DataFrame = paths.alias("paths")
-      .join(mirrored.alias("mirrored"), col("paths.dst") === col("mirrored.src"))
-      .select(
-        col("paths.src"),
-        col("mirrored.dst"),
-        appendToSeq(col("paths.path"), col("mirrored.dst")).alias("path")
-      )
+    val sp : DataFrame = ???
 
     sp.cache()
 
     // TODO: filter sp DataFrame, leaving only path's which lead to our destination "end" node
-    val filtered : DataFrame = sp.where(s"dst = '$end'")
+    val filtered : DataFrame = ???
 
     if (filtered.count() > 0){
         filtered
@@ -101,16 +81,11 @@ object GraphFramesDegreeAndShortestPath extends App {
     // Filter the edges to our starting vertex and init the path sequence.
     // TODO: Create a DataFrame of edges, outgoing from our "start" node
     //  with an additional column 'path', containing this edge as an array
-    val paths : DataFrame = mirrored.where(s"src = '$start'")
-      .select(
-          mirrored("src"),
-          mirrored("dst"),
-          array(mirrored("src"), mirrored("dst")).alias("path")
-      )
+    val paths : DataFrame = ???
 
-      // Recursively call until convergence
-      val sp = shortestPathRecurse(paths, mirrored, end)
-      sp.withColumn("path_length", size(sp("path")) - 1)
+    // Recursively call until convergence
+    val sp = shortestPathRecurse(paths, mirrored, end)
+    sp.withColumn("path_length", size(sp("path")) - 1)
   }
   
 
