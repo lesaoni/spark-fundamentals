@@ -9,6 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <repositories>
+        <!-- For grpahframes -->
         <repository>
           <id>spark-packages</id>
           <url>https://dl.bintray.com/spark-packages/maven/</url>
@@ -34,6 +35,7 @@
             <version>${spark.version}</version>
         </dependency>
 
+        <!-- To use new Spark Session API we need Spark SQL -->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-sql_${scala.compat.version}</artifactId>
@@ -46,6 +48,7 @@
             <version>0.7.0</version>
         </dependency>
 
+        <!-- Day 3 dependencies -->
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-streaming_${scala.compat.version}</artifactId>
