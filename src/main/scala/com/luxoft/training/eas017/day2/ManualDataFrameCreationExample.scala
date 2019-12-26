@@ -1,10 +1,8 @@
 package com.luxoft.training.eas017.day2
 
-object ManualDataFrameCreationExample extends App {
+import org.apache.spark.sql.SparkSession
 
-  import org.apache.spark.sql._
-  import org.apache.spark.sql.types._
-  import org.apache.spark.sql.functions._
+object ManualDataFrameCreationExample extends App {
 
   val spark = SparkSession.builder()
       .master("local[*]")
@@ -51,23 +49,77 @@ object ManualDataFrameCreationExample extends App {
   )
 
   val rdd = sc.parallelize(data)
-  
+
+  import org.apache.spark.sql.types._
+
   val schema = StructType(
     Array(
       StructField("id", IntegerType, nullable = false),
       StructField("name", StringType, nullable = false),
-      StructField("value", DoubleType, nullable = true)
+      StructField("value", DoubleType, nullable = false)
     )
   )
+
+ import org.apache.spark.sql.Row
 
   val rows = rdd.map(rowTuple => Row(rowTuple._1, rowTuple._2, rowTuple._3))
 
   val df = spark.createDataFrame(rows, schema)
+  
+  // Manipulating the DataFrame
 
   df.createOrReplaceTempView("myTable")
 
-  spark.sql("SELECT name FROM table1 WHERE")
+  spark.sql("SELECT name FROM myTable WHERE id > 1")
+
+  // df("id") === col("id") === $"id"
+  import org.apache.spark.sql.functions._
+
+  df.filter(col("id") > 1).select("name")
+
+  // where and filter are the same
+  df.where(col("id") > 1).select("name")
+  
+  spark.sql("SELECT * FROM myTable WHERE ID > 1 AND INSTR(Name, 'B') > 0")
+
+  df.where(($"ID" > 1) and ($"Name" contains "B"))
+  df.where($"ID" > 1 && $"Name" contains "B")
+
+  spark.sql("SELECT * FROM myTable WHERE ID > 1 OR INSTR(Name,'B')>0")
+  df.where($"ID" > 1 || $"Name" contains "B")
 
 
+  spark.sql("SELECT * FROM myTable WHERE ID > 1 OR INSTR(Name,'B')>0")
+
+
+  //Another df to demonstrate join, union etc.
+  val additionalData = Seq(
+    (4, "A", 1.23),
+    (1, "D", 3.25),
+    (2, "E", 6.12)
+  )
+  val additionalDf = spark.createDataFrame(additionalData)
+    .withColumnRenamed("_1", "id")
+    .withColumnRenamed("_2", "name")
+    .withColumnRenamed("_3", "value")
+  additionalDf.createOrReplaceTempView("myNewTable")
+
+  df.join(additionalDf, "id")
+
+  df.join(additionalDf, "id")
+
+  val bigDf = df.union(additionalDf)
+
+
+  bigDf.groupBy($"id").avg("value")
+
+  bigDf.groupBy($"id").avg("value")
+
+
+  //UDF example
+
+  val goodValue = udf((rate: Double) => if (rate > 0.5) true else false)
+
+  df.select(goodValue($"value"))
 
 }
