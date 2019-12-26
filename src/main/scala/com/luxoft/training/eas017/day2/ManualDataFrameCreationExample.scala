@@ -5,9 +5,9 @@ import org.apache.spark.sql.SparkSession
 object ManualDataFrameCreationExample extends App {
 
   val spark = SparkSession.builder()
-      .master("local[*]")
-      .appName("DF creation")
-      .getOrCreate()
+    .master("local[*]")
+    .appName("DF creation")
+    .getOrCreate()
   val sc = spark.sparkContext
   import spark.implicits._
 
@@ -60,17 +60,17 @@ object ManualDataFrameCreationExample extends App {
     )
   )
 
- import org.apache.spark.sql.Row
+  import org.apache.spark.sql.Row
 
   val rows = rdd.map(rowTuple => Row(rowTuple._1, rowTuple._2, rowTuple._3))
 
   val df = spark.createDataFrame(rows, schema)
-  
+
   // Manipulating the DataFrame
 
   df.createOrReplaceTempView("myTable")
 
-  spark.sql("SELECT name FROM myTable WHERE id > 1")
+  spark.sql("SELECT name FROM myTable WHERE id > 1").show()
 
   // df("id") === col("id") === $"id"
   import org.apache.spark.sql.functions._
@@ -79,7 +79,7 @@ object ManualDataFrameCreationExample extends App {
 
   // where and filter are the same
   df.where(col("id") > 1).select("name")
-  
+
   spark.sql("SELECT * FROM myTable WHERE ID > 1 AND INSTR(Name, 'B') > 0")
 
   df.where(($"ID" > 1) and ($"Name" contains "B"))
@@ -94,22 +94,35 @@ object ManualDataFrameCreationExample extends App {
 
   //Another df to demonstrate join, union etc.
   val additionalData = Seq(
-    (4, "A", 1.23),
+    (4, null, 1.23),
     (1, "D", 3.25),
     (2, "E", 6.12)
   )
+
   val additionalDf = spark.createDataFrame(additionalData)
     .withColumnRenamed("_1", "id")
     .withColumnRenamed("_2", "name")
     .withColumnRenamed("_3", "value")
   additionalDf.createOrReplaceTempView("myNewTable")
-
   df.join(additionalDf, "id")
 
   df.join(additionalDf, "id")
+
 
   val bigDf = df.union(additionalDf)
 
+  //joins example
+  spark.sql("SELECT * FROM myTable JOIN myNewTable ON myTable.id = myNewTable.id").show()
+  df.join(additionalDf, df("id") === additionalDf("id") && additionalDf("value") > 4, "left").show
+
+  //union table and using in build SQL
+  val unioned = df.union(additionalDf)
+  unioned.createOrReplaceTempView("unionTable")
+  unioned.groupBy("id").sum("value").show()
+  unioned.groupBy("id").agg(count("id"),sum("value")).show()
+  //having expression
+  unioned.groupBy("id").agg(count("id"),sum("value")).filter(col("count(id)") > 1).show
+  unioned.groupBy("id").agg(count("id"),sum("value")).sort(col("sum(value)").desc).show
 
   bigDf.groupBy($"id").avg("value")
 
