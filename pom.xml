@@ -51,12 +51,6 @@
         <!-- Day 3 dependencies -->
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-streaming_${scala.compat.version}</artifactId>
-            <version>${spark.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.spark</groupId>
             <artifactId>spark-graphx_${scala.compat.version}</artifactId>
             <version>${spark.version}</version>
         </dependency>
@@ -65,6 +59,18 @@
             <groupId>graphframes</groupId>
             <artifactId>graphframes</artifactId>
             <version>0.7.0-spark2.4-s_${scala.compat.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-streaming_${scala.compat.version}</artifactId>
+            <version>${spark.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-mllib_${scala.compat.version}</artifactId>
+            <version>${spark.version}</version>
         </dependency>
         
     </dependencies>
